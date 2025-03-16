@@ -16,7 +16,7 @@ showLoading();
 function showweather(position){
     alert(position.coords.latitude)
     const xhr=new XMLHttpRequest();
-xhr.open('GET','https://api.weatherapi.com/v1/forecast.json?key=fb02a65d29f54562858220921252702&q=oujda&days=7&aqi=no&alerts=no');
+xhr.open('GET','https://api.weatherapi.com/v1/forecast.json?key=17c33342929444e28af10403251503&q=oujda&days=7&aqi=no&alerts=no');
 
     xhr.onload=function(){
         hideLoading();
@@ -43,7 +43,7 @@ xhr.open('GET','https://api.weatherapi.com/v1/forecast.json?key=fb02a65d29f54562
     const sunriseTime = data.forecast.forecastday[0].astro.sunrise.split(" ")[0]; 
     const sunsetTime = data.forecast.forecastday[0].astro.sunset.split(" ")[0];
     
-    const weatherConditionIcon = data.current.condition.icon; 
+    const weatherConditionIcon = "https:"+data.current.condition.icon; 
     const weatherConditionText = data.current.condition.text; 
     
     const dayNightIconContainer = document.getElementById("day-night-icon");
@@ -55,7 +55,7 @@ xhr.open('GET','https://api.weatherapi.com/v1/forecast.json?key=fb02a65d29f54562
         
         const weatherIcon = document.createElement("img");
         weatherIcon.src = iconUrl; 
-        weatherIcon.alt = data.current.condition.text; 
+        weatherIcon.alt = altText; 
     
         dayNightIconContainer.appendChild(weatherIcon);
     }
@@ -70,7 +70,7 @@ xhr.open('GET','https://api.weatherapi.com/v1/forecast.json?key=fb02a65d29f54562
                 hourElement.innerHTML = `
                     <p> ${hourData.time.split(" ")[1]}</p>
                     <p> ${Math.round(hourData.temp_c)}°C</p>
-                    <p><img src="${hourData.condition.icon}" alt="${hourData.condition.text}"></p>
+                    <p><img src="https:${hourData.condition.icon}" alt="${hourData.condition.text}"></p>
                     
                 `;
                 container.appendChild(hourElement);
@@ -78,25 +78,27 @@ xhr.open('GET','https://api.weatherapi.com/v1/forecast.json?key=fb02a65d29f54562
         const daily = data.forecast.forecastday; 
     const container1 = document.querySelector(".second"); 
     const dayForecasts = container1.querySelectorAll("div"); 
-    
+    console.log(daily);
     for (let i = 0; i < 7; i++) {
-        const dayData = daily[i]; 
-        const dayForecast = dayForecasts[i]; 
-    
-        
+        console.log(i);
+        const dayData = daily[i];
+        const dayForecast = dayForecasts[i];
         const dayName = dayForecast.querySelector(".day");
-        dayName.textContent = new Date(dayData.date).toLocaleDateString("en-US", { weekday: "long" }); 
+        dayName.textContent = new Date(dayData.date).toLocaleDateString("en-US", { weekday: "long" });
+        
         const chanceOfRain = dayForecast.querySelector(".fa-droplet");
-        chanceOfRain.nextSibling.textContent = `${dayData.day.daily_chance_of_rain}%`; 
-    
+        chanceOfRain.nextSibling.textContent = `${dayData.day.daily_chance_of_rain}%`;
+        
         const maxTemp = dayForecast.querySelector(".max");
-        maxTemp.textContent = `${Math.round(dayData.day.maxtemp_c)}°`; 
+        maxTemp.textContent = `${Math.round(dayData.day.maxtemp_c)}°`;
+        
         const minTemp = dayForecast.querySelector(".min");
-        minTemp.textContent = `${Math.round(dayData.day.mintemp_c)}°`; 
-        const isDay = dayData.day.condition.is_day; 
+        minTemp.textContent = `${Math.round(dayData.day.mintemp_c)}°`;
+        
+        // Set the weather icon
         const weatherIcon = dayForecast.querySelector(".weather-icon");
-        weatherIcon.src= dayData.day.condition.icon;
-    
+        weatherIcon.src = "https:"+dayData.day.condition.icon;
+        weatherIcon.alt = dayData.day.condition.text;
     }
     const containerback=document.querySelector(".container");
     const isday=data.current.is_day;
